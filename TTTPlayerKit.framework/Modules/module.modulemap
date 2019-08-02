@@ -1,0 +1,6 @@
+framework module TTTPlayerKit {
+  umbrella header "TTTPlayerKit.h"
+
+  export *
+  module * { export * }
+}

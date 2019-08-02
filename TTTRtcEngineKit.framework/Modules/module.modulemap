@@ -1,0 +1,6 @@
+framework module TTTRtcEngineKit {
+  umbrella header "TTTRtcEngineKit.h"
+
+  export *
+  module * { export * }
+}
