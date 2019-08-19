@@ -1,7 +1,7 @@
 
 ## 2.3.0
 
-#### 修改
+支持Pod **TTTRtcEngineKit_iOS** **TTTPlayerKit_iOS** 如果pod search不到，更新Pod环境
 
 
 #### 新增方法
