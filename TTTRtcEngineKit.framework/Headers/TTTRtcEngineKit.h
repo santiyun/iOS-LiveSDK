@@ -87,7 +87,9 @@ typedef NS_ENUM(NSUInteger, TTTRtcVideoProfile) {
     TTTRtc_VideoProfile_360P    = 30,  //  640x360   15    400
     TTTRtc_VideoProfile_480P    = 40,  //  848x480   15    600
     TTTRtc_VideoProfile_720P    = 50,  // 1280x720   15   1130
+#if TARGET_OS_IOS
     TTTRtc_VideoProfile_1080P   = 60,  // 1920x1080  15   2080
+#endif
     TTTRtc_VideoProfile_Default = TTTRtc_VideoProfile_360P
 };
 
