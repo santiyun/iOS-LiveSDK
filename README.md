@@ -1,8 +1,21 @@
+## 连麦SDK
+
+连麦SDK使用需要同时下载拉流依赖库[TTTPlayerKit.framework](https://github.com/santiyun/TTTPlayerKit_iOS)
+
+更新连麦SDK时不需要更新**TTTPlayerKit.framework**
+
+如果项目中使用了IJK拉流的库可去掉**TTTPlayerKit.framework**，去掉拉流库出现问题请联系我们
+
+## Pod说明
+
+连麦SDK**TTTRtcEngineKit_iOS** 
+
+拉流SDK**TTTPlayerKit_iOS** 
+
+如果pod search不到，更新Pod环境
+
 
 ## 2.3.0
-
-支持Pod **TTTRtcEngineKit_iOS** **TTTPlayerKit_iOS** 如果pod search不到，更新Pod环境
-
 
 #### 新增方法
 
