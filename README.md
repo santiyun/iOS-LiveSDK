@@ -8,11 +8,11 @@
 
 ## Pod说明
 
-连麦SDK**TTTRtcEngineKit_iOS** 
+连麦SDK **TTTRtcEngineKit_iOS** 
 
-拉流SDK**TTTPlayerKit_iOS** 
+拉流SDK **TTTPlayerKit_iOS** 
 
-如果pod search不到，更新Pod环境
+如果pod search不到，请更新Pod环境
 
 
 ## 2.3.0
