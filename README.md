@@ -15,6 +15,30 @@
 如果pod search不到，请更新Pod环境
 
 
+## 2.4.0
+
+#### 新增方法
+
+1. 增加**stopAudioPlayAndRecord**停止/恢复音频采集和播放
+2. 增加**setRecordingAudioFrameParametersWithSampleRate**设置录制的声音格式
+3. 增加**setPlaybackAudioFrameParametersWithSampleRate**设置播放的声音格式
+4. 增加**setMixedAudioFrameParametersWithSampleRate**设置录制和播放声音混音后的数据格式
+5. 增加**addPublishStreamUrl**增加一路cdn推流地址
+6. 增加**removePublishStreamUrl**删除一路cdn推流地址
+7. **TTTRtcVideoCompositingLayout** 增加**rtmpUrl**推流地址属性
+8. 增加**sendAudioLyric**发送歌词
+
+#### 新增回调
+
+1. **rtmpStreamingCreated** rtmp推流地址创建成功
+2. **receiveAudioLyricOfUid** 接收远端用户发来的歌词
+3. **mixAudioData** 混音音频数据回调
+
+#### 修改方法
+
+1. **setVideoMixerBackgroundImgUrl**新增推流地址的参数
+
+
 ## 2.3.0
 
 #### 新增方法

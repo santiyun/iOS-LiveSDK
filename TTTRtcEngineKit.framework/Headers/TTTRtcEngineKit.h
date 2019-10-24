@@ -72,8 +72,9 @@ typedef NS_ENUM(NSUInteger, TTTRtcClientRole) {
  *  音频编码格式
  */
 typedef NS_ENUM(NSUInteger, TTTRtcAudioCodecType) {
-    TTTRtc_AudioCodec_AAC     = 1, // 码率范围24kbps~96kbps
+    TTTRtc_AudioCodec_AAC     = 1, // 码率范围32kbps~96kbps
     TTTRtc_AudioCodec_ISAC_WB = 2, // 码率范围10kbps~32kbps
+    TTTRtc_AudioCodec_OPUS    = 4, // 码率范围32kbps~96kbps
 };
 
 /**
@@ -105,12 +106,21 @@ typedef NS_ENUM(NSUInteger, TTTRtcUserOfflineReason) {
 /**
  *  音频输出路由
  */
+#if TARGET_OS_IOS
 typedef NS_ENUM(NSUInteger, TTTRtcAudioOutputRouting)
 {
-    TTTRtc_AudioOutput_Headset   = 0, //耳机或蓝牙
-    TTTRtc_AudioOutput_Speaker   = 1, //扬声器
-    TTTRtc_AudioOutput_Headphone = 2  //手机听筒
+    TTTRtc_AudioOutput_Headset   = 0, // 耳机或蓝牙
+    TTTRtc_AudioOutput_Speaker   = 1, // 扬声器
+    TTTRtc_AudioOutput_Headphone = 2  // 手机听筒
 };
+#elif TARGET_OS_OSX
+typedef NS_ENUM(NSUInteger, TTTRtcAudioOutputRouting)
+{
+    TTTRtc_AudioOutput_InternalSpeaker = 0, // 内置扬声器
+    TTTRtc_AudioOutput_ExternalSpeaker = 1, // 外置扬声器
+    TTTRtc_AudioOutput_Headphones      = 2  // 耳机
+};
+#endif
 
 /**
  *  日志过滤器
@@ -246,6 +256,7 @@ typedef NS_ENUM(NSUInteger, TTTRtcAnchorExitReason) {
 @property (assign, nonatomic) NSUInteger sentBitrate;     // 发送的码率(kbps)
 @property (assign, nonatomic) NSUInteger receivedBitrate; // 接收的码率(kbps)
 @property (assign, nonatomic) NSUInteger captureDataSize; // push数据量
+@property (assign, nonatomic) CGFloat sentLossRate;       // 发送的丢包率
 
 @end
 
@@ -255,7 +266,7 @@ typedef NS_ENUM(NSUInteger, TTTRtcAnchorExitReason) {
 @interface TTTRtcRemoteVideoStats : NSObject
 
 @property (assign, nonatomic) int64_t uid;
-@property (assign, nonatomic) NSUInteger delay;
+@property (assign, nonatomic) NSUInteger delay;             // 延迟
 @property (assign, nonatomic) NSUInteger width;
 @property (assign, nonatomic) NSUInteger height;
 @property (assign, nonatomic) NSUInteger receivedBitrate;   // 接收的码率
@@ -263,7 +274,7 @@ typedef NS_ENUM(NSUInteger, TTTRtcAnchorExitReason) {
 @property (assign, nonatomic) NSUInteger receivedFrames;    // 接收的帧数
 @property (assign, nonatomic) NSUInteger lostFrames;        // 丢掉的帧数
 @property (copy, nonatomic) NSString *deviceId;             // 设备id(远端用户多流必选参数)
-
+@property (assign, nonatomic) CGFloat loseRate;             // 丢包率
 @end
 
 /**
@@ -273,9 +284,9 @@ typedef NS_ENUM(NSUInteger, TTTRtcAnchorExitReason) {
 
 @property (assign, nonatomic) int64_t uid;
 @property (assign, nonatomic) NSUInteger receivedBitrate;   // 接收码率
-@property (assign, nonatomic) NSUInteger loseRate;          // 丢包率
+@property (assign, nonatomic) CGFloat loseRate;             // 丢包率
 @property (assign, nonatomic) NSUInteger bufferDuration;    // 缓存时长
-@property (assign, nonatomic) NSUInteger delay;
+@property (assign, nonatomic) NSUInteger delay;             // 延迟
 @property (assign, nonatomic) NSUInteger audioCodec;
 
 @end
@@ -328,8 +339,8 @@ typedef NS_ENUM(NSUInteger, TTTRtcAnchorExitReason) {
 @property (assign, nonatomic) NSInteger canvasHeight;  // 整个屏幕(画布)的高度
 @property (copy, nonatomic) NSString* backgroundColor; // 屏幕(画布)的背景颜色，可根据 RGB 填写所需颜色对应的6位符号。e.g. "#c0c0c0"
 @property (strong, nonatomic) NSMutableArray *regions; // 视频合成区域列表
-@property (copy, nonatomic) NSString *mExtInfos;       //应用程序自定义的数据
-
+@property (copy, nonatomic) NSString *mExtInfos;       // 应用程序自定义的数据
+@property (copy, nonatomic) NSString *rtmpUrl;         // cdn推流地址,多个cdn推理地址必传参数
 @end
 
 /**
@@ -450,14 +461,14 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 #if TARGET_OS_OSX
 
 /**
- *  音频采集设备
- */
-@property (nonatomic, weak) AVCaptureDevice *audioCaptureDevice;
-
-/**
  *  视频采集设备
  */
 @property (nonatomic, weak) AVCaptureDevice *videoCaptureDevice;
+
+/**
+ *  音频采集设备
+ */
+@property (nonatomic, weak) TTTRtcAudioDevice *audioCaptureDevice;
 
 /**
  *  音频输出设备
@@ -706,6 +717,13 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 - (int)clearVideoWatermarks;
 #endif
 
+/**
+ *  是否设置水印
+ *
+ *  @return YES: 是，NO: 否。
+ */
+- (BOOL)isVideoWatermarkEnabled;
+
 #if TARGET_OS_IOS
 /**
  *  切换前置/后置摄像头
@@ -770,13 +788,6 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 #elif TARGET_OS_OSX
 
 /**
- *  获取音频采集设备（麦克风）
- *
- *  @return 音频采集设备数组
- */
-- (NSArray<AVCaptureDevice *> *)audioCaptureDevices;
-
-/**
  *  获取视频采集设备（摄像头）
  *
  *  @return 视频采集设备数组
@@ -784,7 +795,14 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 - (NSArray<AVCaptureDevice *> *)videoCaptureDevices;
 
 /**
- *  获取音频输出设备
+ *  获取音频采集设备（麦克风）
+ *
+ *  @return 音频采集设备数组
+ */
+- (NSArray<TTTRtcAudioDevice *> *)audioCaptureDevices;
+
+/**
+ *  获取音频输出设备（扬声器）
  *
  *  @return 音频输出设备数组
  */
@@ -824,7 +842,7 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 /**
  *  调节本地说话音量
  *
- *  @param scale 音量范围为0~100。默认100为原始音量
+ *  @param scale 音量范围为0~500。默认100为原始音量
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
@@ -867,6 +885,15 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
  */
 - (int)enableHWAEC:(BOOL)enable;
 
+/*
+ * 启用/禁用软件回声消除
+ *
+ * @param enable 是否启用
+ *
+ * @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)enableSoftAEC:(BOOL)enable;
+
 /**
  *  打开/关闭耳返功能，在插入耳机的情况下有效
  *
@@ -884,6 +911,13 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
 - (int)setAudioEarBackVolume:(NSUInteger)volume;
+
+/**
+ *  是否打开耳返
+ *
+ *  @return YES: 耳返是打开状态，NO: 耳返是关闭状态。
+ */
+- (BOOL)isAudioEarBackEnabled;
 
 /**
  *  启用/关闭本地音频和远端音频数据回调
@@ -1299,11 +1333,12 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 
 /**
  *  设置混屏背景图片
- *  当前版本仅支持进房间前进行设置，退出房间清空，再次进房间需要重新设置。
+ *  在加入房间之前调用rtmpUrl设置为nil。加入房间之后推单路cdn流可以设置nil或者对应推流地址，推多路流必须设置对应cdn推流地址
  *
- *  @param url 背景图片所在的地址
+ *  @param url     背景图片所在的地址
+ *  @param rtmpUrl 背景图对应的cdn推流地址
  */
-- (void)setVideoMixerBackgroundImgUrl:(NSString*)url;
+- (void)setVideoMixerBackgroundImgUrl:(NSString *)url forRtmpUrl:(NSString *)rtmpUrl;
 
 /**
  *  开启网络质量检测
@@ -1398,6 +1433,80 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 - (int)pullRenderingAudioFrame:(int8_t *)data length:(int)len;
 
 /**
+*  停止/恢复音频采集和播放
+*
+*  @param stop  YES: 停止采集和播放  NO: 恢复采集和播放
+*
+*  @return 0: 方法调用成功，<0: 方法调用失败。
+*/
+- (int)stopAudioPlayAndRecord:(BOOL)stop;
+
+/**
+ *  设置录制的声音格式
+ *
+ *  @param sampleRate     采样率，建议设置为AVAudioSession.sharedInstance.sampleRate
+ *  @param channel        声道数，可设置：1或2
+ *  @param samplesPerCall 采样点数，建议设置：1024或2048
+ *
+ *  @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)setRecordingAudioFrameParametersWithSampleRate:(NSInteger)sampleRate channel:(NSInteger)channel samplesPerCall:(NSInteger)samplesPerCall;
+
+/**
+ *  设置播放的声音格式
+ *  回调数据包含本地和所有远端用户混音数据
+ *
+ *  @param sampleRate     采样率，建议设置为AVAudioSession.sharedInstance.sampleRate
+ *  @param channel        声道数，可设置：1或2
+ *  @param samplesPerCall 采样点数，建议设置：1024或2048
+ *
+ *  @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)setPlaybackAudioFrameParametersWithSampleRate:(NSInteger)sampleRate channel:(NSInteger)channel samplesPerCall:(NSInteger)samplesPerCall;
+
+/**
+ *  设置录制和播放声音混音后的数据格式
+ *  回调数据包含本地和所有远端用户混音数据
+ *
+ *  @param sampleRate     采样率
+ *  @param channel        声道数，可设置：1或2
+ *  @param samplesPerCall 采样点数，建议设置：1024或2048
+ *
+ *  @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)setMixedAudioFrameParametersWithSampleRate:(NSInteger)sampleRate channel:(NSInteger)channel samplesPerCall:(NSInteger)samplesPerCall;
+
+/**
+*  增加一路cdn推流地址
+*  在加入房间成功后设置，设置成功之后收到回调"rtmpStreamingCreated"
+   然后可通过TTTRtcVideoCompositingLayout.rtmpUrl设置对应布局，也可设置对应的背景图
+*
+*  @param url cdn推流地址
+*
+*  @return 0: 方法调用成功，<0: 方法调用失败。
+*/
+- (int)addPublishStreamUrl:(NSString *)url;
+
+/**
+*  删除一路cdn推流地址
+*  在加入房间成功后设置
+*
+*  @param url cdn推流地址
+*
+*  @return 0: 方法调用成功，<0: 方法调用失败。
+*/
+- (int)removePublishStreamUrl:(NSString *)url;
+
+/**
+*  发送歌词
+*
+*  @param lyric 歌词内容
+*
+*  @return 0: 方法调用成功，<0: 方法调用失败。
+*/
+- (int)sendAudioLyric:(NSString *)lyric;
+
+/**
  *  获取Akamai的拉流地址
  *
  *  @param appID     应用ID，由连麦平台分配
@@ -1409,6 +1518,7 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 + (int)getAkamai:(NSString *)appID channel:(NSString *)channelId completionHandler:(void(^)(NSError *error, NSString *serverid))handler;
 
 #pragma mark - deprecated API
+- (void)setVideoMixerBackgroundImgUrl:(NSString*)url DEPRECATED_MSG_ATTRIBUTE("use setVideoMixerBackgroundImgUrl:forRtmpUrl: instead");
 - (int)adjustAudioMixingVolume:(NSInteger)volume DEPRECATED_MSG_ATTRIBUTE("use adjustAudioMixingPlayoutVolume: instead");
 
 - (int)muteRemoteVideoStream:(int64_t)uid mute:(BOOL)mute DEPRECATED_MSG_ATTRIBUTE("use muteRemoteVideoStream:mute:deviceId: instead");
@@ -1603,7 +1713,6 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 
 /**
  *  本端音频采集数据回调
- *  通过"enableAudioDataReport:(BOOL)enableLocal remote:(BOOL)enableRemote"启用
  *
  *  @param data        PCM数据
  *  @param size        PCM数据长度
@@ -1614,7 +1723,6 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 
 /**
  *  远端音频数据回调
- *  通过"enableAudioDataReport:(BOOL)enableLocal remote:(BOOL)enableRemote"启用
  *
  *  @param data        音频数据
  *  @param size        数据长度
@@ -1622,6 +1730,17 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
  *  @param channels    声道数
  */
 - (void)rtcEngine:(TTTRtcEngineKit *)engine remoteAudioData:(char *)data dataSize:(NSUInteger)size sampleRate:(NSUInteger)sampleRate channels:(NSUInteger)channels;
+
+/**
+ *  混音音频数据回调
+ *  通过"setMixedAudioFrameParametersWithSampleRate"启用
+ *
+ *  @param data        音频数据
+ *  @param size        数据长度
+ *  @param sampleRate  采样率
+ *  @param channels    声道数
+ */
+- (void)rtcEngine:(TTTRtcEngineKit *)engine mixAudioData:(char *)data dataSize:(NSUInteger)size sampleRate:(NSUInteger)sampleRate channels:(NSUInteger)channels;
 
 /**
  *  伴奏播放开始的回调
@@ -1776,9 +1895,11 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
 - (void)rtcEngine:(TTTRtcEngineKit *)engine lastmileQuality:(TTTNetworkQuality)quality;
 
 /**
- *  混屏创建
+ *  rtmp推流地址创建成功
+ *
+ *  @param rtmpUrl rtmp推流地址
  */
-- (void)rtcEngineVideoMixerCreated:(TTTRtcEngineKit *)engine;
+- (void)rtcEngine:(TTTRtcEngineKit *)engine rtmpStreamingCreated:(NSString *)rtmpUrl;
 
 /**
  * channelKey即将过期
@@ -1804,6 +1925,14 @@ typedef NS_ENUM(NSUInteger, TTTRtcAudioDeviceType) {
  *  @param frameRate 帧率
  */
 - (void)rtcEngine:(TTTRtcEngineKit *)engine changeVideoFrameRate:(NSUInteger)frameRate;
+
+/**
+*  接收远端用户发来的歌词
+*
+*  @param uid   用户id
+*  @param lyric 歌词内容
+*/
+- (void)rtcEngine:(TTTRtcEngineKit *)engine receiveAudioLyricOfUid:(int64_t)uid lyric:(NSString *)lyric;
 
 #pragma mark - deprecated delegate
 - (void)rtcEngine:(TTTRtcEngineKit *)engine onAnchorEnter:(int64_t)sessionID userID:(int64_t)userID error:(TTTRtcErrorCode)error __deprecated;
