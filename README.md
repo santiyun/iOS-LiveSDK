@@ -14,6 +14,23 @@
 
 如果pod search不到，请更新Pod环境
 
+## 2.5.0
+
+#### 新增
+
+1. 增加**adjustPlaybackSignalVolume:**调节播放人声的音量
+2. 增加**TTTVideoType**设备类型枚举
+3. 增加**muteRemoteRtmpAudioStream**停止/恢复远端用户音频混流到rtmp
+
+#### 修改
+
+1. **didVideoEnabled**回调增加设备类型参数
+2. **TTTRtcLocalVideoStats**增加**rtt**属性
+3. **TTTRtcLocalAudioStats**增加**rtt**属性
+4. **TTTRtcRemoteVideoStats**增加**rtt**属性
+5. **TTTRtcRemoteAudioStats**增加**rtt**属性
+6. 网络传输优化
+
 
 ## 2.4.0
 
