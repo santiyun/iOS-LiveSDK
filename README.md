@@ -14,6 +14,21 @@
 
 如果pod search不到，请更新Pod环境
 
+## 2.7.0
+
+#### 修改
+
+1. 优化远端视频打开时间
+2. 优化断网重连
+3. 优化直播推流配置**TTTPublisherConfiguration**
+4. 修复部分已知bug
+
+#### 过期方法
+
+1. **setVideoMixerParams**
+2. **setAudioMixerParams**
+
+
 ## 2.6.0
 
 1. 新增纯音频主播带副播跨房间PK
