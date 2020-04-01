@@ -1068,6 +1068,16 @@
 - (int)setMixedAudioFrameParametersWithSampleRate:(NSInteger)sampleRate channel:(NSInteger)channel samplesPerCall:(NSInteger)samplesPerCall;
 
 /**
+ *  启用默认音频播放
+ *  调用该功能，内部会播放默认静音数据
+ *
+ *  @param enable  是否启用默认播放
+ *
+ *  @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)enableDefaultAudioPaly:(BOOL)enable;
+
+/**
  *  增加一路cdn推流地址
  *  在加入房间成功后设置，成功回调([TTTRtcEngineDelegate rtcEngine:rtmpStreamingCreated:])
  *  然后可通过([TTTRtcVideoCompositingLayout.rtmpUrl])设置对应布局，
