@@ -190,6 +190,16 @@
 - (int)enableLocalVideo:(BOOL)enabled;
 
 /**
+ *  主动上行本端视频
+ *  加入房间之后调用，对于房间内只有单个副播可以主动上行视频
+ *
+ *  @param up YES: 主动上行视频 NO: 关闭本地主动上行
+ *
+ *  @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)uploadLocalVideo:(BOOL)up;
+
+/**
  *  暂停/恢复发送本地视频流。该方法用于允许/禁止往网络发送本地视频流。
  *
  *  @param mute YES: 暂停发送本地视频流，NO: 恢复发送本地视频流。
@@ -394,10 +404,11 @@
 - (int)muteAllRemoteVideoStreams:(BOOL)mute;
 
 /**
- *  允许/禁止播放指定的远端视频流
+ *  打开/关闭指定的远端视频流
+ *  默认打开用户视频，通过接口可开启或关闭指定视频流
  *
  *  @param uid   用户ID
- *  @param mute  YES: 停止播放接收到的视频流，NO: 允许播放接收到的视频流。
+ *  @param mute  YES: 关闭 NO: 打开
  *  @param devId 设备id(远端用户多设备), 默认设置nil
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
@@ -647,7 +658,7 @@
 - (int)configPublisher:(TTTPublisherConfiguration *)config;
 
 /**
- *  设置画中画布局
+ *  设置画中画布局(SEI布局)
  *  控制cdn各路视频在混频的位置，大小
  *
  *  @param layout 画中画布局

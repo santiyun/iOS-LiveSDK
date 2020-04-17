@@ -14,6 +14,14 @@
 
 如果pod search不到，请更新Pod环境
 
+## 2.8.0
+
+1. 新增主动上行视频功能**uploadLocalVideo**
+2. 新增启用默认音频播放b功能**enableDefaultAudioPaly**
+3. **muteRemoteVideoStream**修改为关闭或打开指定视频流
+4. TTTRtcVideoCompositingLayout.mExtInfos扩展信息会通过SEI发给房间内用户
+5. 优化退房间资源释放
+
 ## 2.7.3
 
 #### 修改

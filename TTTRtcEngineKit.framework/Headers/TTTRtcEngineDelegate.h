@@ -197,11 +197,11 @@
  *  提示谁在说话及其音量，默认禁用。
  *  可通过([TTTRtcEngineKit enableAudioVolumeIndication:smooth:])方法设置。
  *
- *  @param userID              用户ID
+ *  @param uid                 用户ID
  *  @param audioLevel          非线性区间[0,9]
  *  @param audioLevelFullRange 线性区间[0,32768]
  */
-- (void)rtcEngine:(TTTRtcEngineKit *)engine reportAudioLevel:(int64_t)userID
+- (void)rtcEngine:(TTTRtcEngineKit *)engine reportAudioLevel:(int64_t)uid
        audioLevel:(NSUInteger)audioLevel audioLevelFullRange:(NSUInteger)audioLevelFullRange;
 
 /**
@@ -345,9 +345,9 @@
  *  远端用户是否启用双流的回调
  *
  *  @param enabled 是否启用了双流
- *  @param userID  用户ID
+ *  @param uid     用户ID
  */
-- (void)rtcEngine:(TTTRtcEngineKit *)engine dualStreamModeEnabled:(BOOL)enabled userID:(int64_t)userID;
+- (void)rtcEngine:(TTTRtcEngineKit *)engine dualStreamModeEnabled:(BOOL)enabled userID:(int64_t)uid;
 
 /**
  *  网络质量检测回调
@@ -362,8 +362,9 @@
  *  rtmp推流地址创建成功
  *
  *  @param rtmpUrl rtmp推流地址
+ *  @param devId   混频id
  */
-- (void)rtcEngine:(TTTRtcEngineKit *)engine rtmpStreamingCreated:(NSString *)rtmpUrl;
+- (void)rtcEngine:(TTTRtcEngineKit *)engine rtmpStreamingCreated:(NSString *)rtmpUrl deviceId:(NSString *)devId;
 
 /**
  *  channelKey即将过期
@@ -393,11 +394,11 @@
 - (void)rtcEngine:(TTTRtcEngineKit *)engine changeVideoFrameRate:(NSUInteger)frameRate;
 
 /**
-*  接收远端用户发来的歌词
-*
-*  @param uid   用户id
-*  @param lyric 歌词内容
-*/
+ *  接收远端用户发来的歌词
+ *
+ *  @param uid   用户id
+ *  @param lyric 歌词内容
+ */
 - (void)rtcEngine:(TTTRtcEngineKit *)engine receiveAudioLyricOfUid:(int64_t)uid lyric:(NSString *)lyric;
 
 #pragma mark - deprecated delegate

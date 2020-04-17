@@ -152,7 +152,10 @@ typedef NSImageView TImageView;
 @property (strong, nonatomic) TImageView *view;
 /** 视频显示模式 */
 @property (assign, nonatomic) TTTRtcRenderMode renderMode;
-
+/** 混频id */
+@property (copy, nonatomic) NSString *deviceId;
+/** YES:打开 NO:关闭 */
+@property (assign, nonatomic) BOOL open;
 @end
 
 /**
