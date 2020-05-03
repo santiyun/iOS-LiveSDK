@@ -208,7 +208,7 @@ typedef NSImageView TImageView;
 /** cdn视频分辨率, 默认352x640
     最终分辨率([TTTRtcVideoCompositingLayout.canvasWidth])和([TTTRtcVideoCompositingLayout.canvasHeight])
  */
-@property (assign, nonatomic) CGSize videoSize;
+@property (assign, nonatomic) CGSize __deprecated videoSize;
 /** cdn视频帧率, 默认15 */
 @property (assign, nonatomic) int videoFrameRate;
 /** cdn视频码率, 默认750 */
@@ -219,6 +219,8 @@ typedef NSImageView TImageView;
 @property (assign, nonatomic) int samplerate;
 /** cdn1音频单声道，2双声道 */
 @property (assign, nonatomic) int channels;
+/** 智感超清 默认是0， 开启设置1*/
+@property (assign, nonatomic) int encoderMode;
 
 @property (assign, nonatomic) NSInteger __deprecated bitrate;
 @end

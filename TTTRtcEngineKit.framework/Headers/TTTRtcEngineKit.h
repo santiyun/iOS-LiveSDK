@@ -200,15 +200,6 @@
 - (int)uploadLocalVideo:(BOOL)up;
 
 /**
- *  暂停/恢复发送本地视频流。该方法用于允许/禁止往网络发送本地视频流。
- *
- *  @param mute YES: 暂停发送本地视频流，NO: 恢复发送本地视频流。
- *
- *  @return 0: 方法调用成功，<0: 方法调用失败。
- */
-- (int)muteLocalVideoStream:(BOOL)mute;
-
-/**
  *  启动本地视频预览
  *  上行视频用户需要打开该功能，必须和([TTTRtcEngineKit stopPreview])一一对应
  *
@@ -232,7 +223,7 @@
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
-- (int)setupLocalVideo:(TTTRtcVideoCanvas*)local;
+- (int)setupLocalVideo:(TTTRtcVideoCanvas *)local;
 
 /**
  *  显示远端视频
@@ -628,7 +619,7 @@
 
 /**
  *  设置信令超时时间
- *  默认90s, 设置时长需要大于20s
+ *  默认90s, 设置时长需要大于20s, 取值(seconds + 9) / 10
  *
  *  @param seconds 超时时间（秒）
  *
@@ -845,7 +836,7 @@
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
-- (int)startRecordScreen NS_AVAILABLE_IOS(11_0);
+- (int)startRecordScreenWithHandler:(void(^)(NSError *error))handler NS_AVAILABLE_IOS(11_0);
 
 /**
  *  开始录制屏幕并保存
@@ -856,14 +847,14 @@
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
-- (int)startRecordScreenAndSave:(NSString *)path width:(NSInteger)width height:(NSInteger)height NS_AVAILABLE_IOS(11_0);
+- (int)startRecordScreenAndSave:(NSString *)path width:(NSInteger)width height:(NSInteger)height handler:(void(^)(NSError *error))handler NS_AVAILABLE_IOS(11_0);
 
 /**
  *  停止录制屏幕
  *
  *  @return 0: 方法调用成功，<0: 方法调用失败。
  */
-- (int)stopRecordScreen;
+- (int)stopRecordScreenWithHandler:(void(^)(NSError *error))handler;
 
 #endif
 
@@ -902,7 +893,7 @@
  *
  * @return 0:成功
  */
-- (int)insertH264SeiContent:(NSString*)content;
+- (int)insertH264SeiContent:(NSString *)content;
 
 /**
  *  设置是否启用视频双流模式

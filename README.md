@@ -15,6 +15,17 @@
 
 如果pod search不到，请更新Pod环境
 
+
+## 2.9.0
+
+1. **TTTPublisherConfiguration.videoSize** 参数过期
+2. **TTTPublisherConfiguration.bitrate** 参数去掉
+3. **TTTPublisherConfiguration.encoderMode** 智感超清编码
+4. **TTTRtcVideoProfile** 部分分辨率的帧率，码率调整
+5. 去掉XML解析库
+
+
+
 ## 2.8.0
 
 1. 新增主动上行视频功能**uploadLocalVideo**

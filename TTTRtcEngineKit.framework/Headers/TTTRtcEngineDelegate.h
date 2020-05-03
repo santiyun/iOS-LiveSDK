@@ -135,6 +135,7 @@
 /**
  *  添加/删除视频设备(多流)
  *  远端用户通过([TTTRtcEngineKit enableLocalVideo:])触发该回调
+ *  录屏会触发videoType类型改变
  *
  *  @param enabled   YES: 该用户已启用了视频功能，NO: 该用户已关闭了视频功能。
  *  @param devId     设备Id

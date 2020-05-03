@@ -129,19 +129,19 @@ typedef NS_ENUM(NSUInteger, TTTRtcVideoProfile) {
     TTTRtc_VideoProfile_180P = 10,
     /** Resolution: 320x240, frame rate: 15, bitrate 200 kbps */
     TTTRtc_VideoProfile_240P = 20,
-    /** Resolution: 640x360, frame rate: 15, bitrate 400 kbps */
+    /** Resolution: 640x360, frame rate: 15, bitrate 600 kbps */
     TTTRtc_VideoProfile_360P = 30,
-    /** Resolution: 848x480, frame rate: 15, bitrate 600 kbps */
+    /** Resolution: 848x480, frame rate: 15, bitrate 1000 kbps */
     TTTRtc_VideoProfile_480P = 40,
-    /** Resolution: 640x480, frame rate: 15, bitrate 500 kbps */
+    /** Resolution: 640x480, frame rate: 15, bitrate 800 kbps */
     TTTRtc_VideoProfile_640x480 = 45,
-    /** Resolution: 960x540, frame rate: 15, bitrate 800 kbps */
+    /** Resolution: 960x540, frame rate: 24, bitrate 1600 kbps */
     TTTRtc_VideoProfile_960x540 = 48,
-    /** Resolution: 1280x720, frame rate: 15, bitrate 1130 kbps */
+    /** Resolution: 1280x720, frame rate: 30, bitrate 2400 kbps */
     TTTRtc_VideoProfile_720P = 50,
-    /** Resolution: 1920x1080, frame rate: 15, bitrate 2080 kbps */
+    /** Resolution: 1920x1080, frame rate: 30, bitrate 3000 kbps */
     TTTRtc_VideoProfile_1080P   = 60,
-    /** Resolution: 640x360, frame rate: 15, bitrate 400 kbps */
+    /** Resolution: 640x360, frame rate: 15, bitrate 600 kbps */
     TTTRtc_VideoProfile_Default = TTTRtc_VideoProfile_360P
 };
 
