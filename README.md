@@ -16,7 +16,7 @@
 如果pod search不到，请更新Pod环境
 
 
-## 2.9.0
+## 2.9.1
 
 1. **TTTPublisherConfiguration.videoSize** 参数过期
 2. **TTTPublisherConfiguration.bitrate** 参数去掉
