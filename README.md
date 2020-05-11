@@ -16,6 +16,12 @@
 如果pod search不到，请更新Pod环境
 
 
+## 2.9.2
+
+1. 优化PK流程
+
+
+
 ## 2.9.1
 
 1. **TTTPublisherConfiguration.videoSize** 参数过期
