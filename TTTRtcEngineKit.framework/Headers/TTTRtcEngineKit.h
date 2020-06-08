@@ -499,6 +499,15 @@
 - (int)enableSoftAEC:(BOOL)enable;
 
 /**
+ * 启用/禁用音频降噪
+ *
+ * @param enable 是否启用
+ *
+ * @return 0: 方法调用成功，<0: 方法调用失败。
+ */
+- (int)enableDenoise:(BOOL)enable;
+
+/**
  *  打开/关闭耳返功能
  *  在插入耳机的情况下有效
  *
